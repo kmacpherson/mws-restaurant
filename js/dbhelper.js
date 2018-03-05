@@ -2,11 +2,11 @@
  * Common database helper functions.
  */
 class DBHelper {
-
   /**
    * Database URL.
    * Change this to restaurants.json file location on your server.
    */
+
   static get DATABASE_URL() {
     const port = 8000; // Change this to your server port
     return `http://localhost:${port}/data/restaurants.json`;
@@ -15,7 +15,17 @@ class DBHelper {
   /**
    * Fetch all restaurants.
    */
-  static fetchRestaurants(callback) {
+   static fetchRestaurants(cb) {
+     fetch(DBHelper.DATABASE_URL)
+      .then(function(response) {
+        return response.json();
+      }).then(function(data) {
+        return cb(null, data.restaurants);
+      }).catch(function(err) {
+        cb(err, null);
+      });
+   }
+  /* static fetchRestaurants(callback) {
     let xhr = new XMLHttpRequest();
     xhr.open('GET', DBHelper.DATABASE_URL);
     xhr.onload = () => {
@@ -29,7 +39,7 @@ class DBHelper {
       }
     };
     xhr.send();
-  }
+  } */
 
   /**
    * Fetch a restaurant by its ID.
@@ -113,6 +123,7 @@ class DBHelper {
         callback(error, null);
       } else {
         // Get all neighborhoods from all restaurants
+        console.log(restaurants);
         const neighborhoods = restaurants.map((v, i) => restaurants[i].neighborhood);
         // Remove duplicates from neighborhoods
         const uniqueNeighborhoods = neighborhoods.filter((v, i) => neighborhoods.indexOf(v) == i);
